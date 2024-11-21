@@ -1,30 +1,14 @@
-"use client";
-
+"use client"
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { signIn, useSession } from "next-auth/react";
-import {
-  FacebookLoginButton,
-  GithubLoginButton,
-  GoogleLoginButton,
-  LinkedInLoginButton,
-  OktaLoginButton,
-} from "react-social-login-buttons";
+import { FacebookLoginButton, GithubLoginButton, GoogleLoginButton, LinkedInLoginButton, OktaLoginButton } from "react-social-login-buttons";
 import { useRouter } from "next/navigation";
 
 const Login = () => {
-  const { data: session, status } = useSession();
+
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  // Redirect authenticated users to the dashboard
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/dashboard");
-    }
-  }, [status, router]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -32,8 +16,8 @@ const Login = () => {
     try {
       const data = await signIn("credentials", {
         redirect: false,
-        email, // Using state variables for email
-        password, // Using state variables for password
+        email, // Ensure you have defined the email state
+        password, // Ensure you have defined the password state
       });
 
       if (data?.error) {
@@ -46,34 +30,33 @@ const Login = () => {
     }
   };
 
-  if (status === "loading") {
-    return <div>Loading...</div>; // Optional loading indicator
-  }
-
-  if (status === "authenticated") {
-    return null; // Prevent showing the login form if authenticated
+  if (data === "authenticated") {
+    router.push("/dashboard");
+    return null; // Prevent rendering the login form
   }
 
   return (
     <div className="container container-fluid">
       <div className="row mt-5 d-flex justify-content-center">
-        <div className="col-10 col-lg-5">
-          <form className="border rounded p-4" onSubmit={submitHandler}>
+        <div className="col-10 col-lg-5 ">
+          <form
+            className="border  rounded p-4"
+            onSubmit={submitHandler}
+          >
             <center>
-              <h1 className="mb-4">Sign In</h1>
+            <h1 className="mb-4">Sign</h1>
             </center>
-            <hr />
-           
-            <div className="text-center mt-3">
-              <p>Or sign in with</p>
+            <hr/>
+            <div className="text-center">
+              <p>Or sign up with</p>
               <GoogleLoginButton onClick={() => signIn("google")} />
               <GithubLoginButton onClick={() => signIn("github")} />
               <LinkedInLoginButton onClick={() => signIn("linkedin")} />
-              <OktaLoginButton onClick={() => signIn("orcid")}>
-                <span>
-                  Log in with ORC<span style={{ color: "#a5ce39" }}>iD</span>
-                </span>
-              </OktaLoginButton>
+             
+              <OktaLoginButton   icon={'1px'}
+ onClick={() => signIn("orcid")}>
+  <span>Log in with ORC<span style={{color:'#a5ce39'}}>iD</span></span>
+</OktaLoginButton>
             </div>
           </form>
         </div>
