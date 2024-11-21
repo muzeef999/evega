@@ -19,7 +19,9 @@ const Header = () => {
 
   const handleClick = () => {
     router.push('/login'); // Redirects to the /login page
+    toast.success("You have logged out successfully!");
   };
+
   return (
     <nav className="navbar navbar-expand-lg sticky-top">
       <div className="container cont">
