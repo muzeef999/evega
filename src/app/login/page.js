@@ -1,11 +1,15 @@
 "use client"
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { FacebookLoginButton, GithubLoginButton, GoogleLoginButton, LinkedInLoginButton, OktaLoginButton } from "react-social-login-buttons";
 import { useRouter } from "next/navigation";
 
+
 const Login = () => {
+
+  const [authStatus, setAuthStatus] = useState(""); // Track authentication status
+
 
   const router = useRouter();
 
@@ -23,6 +27,7 @@ const Login = () => {
       if (data?.error) {
         console.error(data.error);
       } else {
+        setAuthStatus("authenticated"); // Update auth status
         router.push("/dashboard");
       }
     } catch (error) {
@@ -30,7 +35,7 @@ const Login = () => {
     }
   };
 
-  if (data === "authenticated") {
+  if (authStatus === "authenticated") {
     router.push("/dashboard");
     return null; // Prevent rendering the login form
   }
