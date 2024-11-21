@@ -1,14 +1,13 @@
 "use client"
 import Link from "next/link";
 import React from "react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { FacebookLoginButton, GithubLoginButton, GoogleLoginButton, LinkedInLoginButton, OktaLoginButton } from "react-social-login-buttons";
 import { useRouter } from "next/navigation";
 
 const Login = () => {
 
   const router = useRouter();
-
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -23,14 +22,15 @@ const Login = () => {
       if (data?.error) {
         console.error(data.error);
       } else {
-        router.push("/dashboard");
+
+        console.log("login sucess")
+        router.push("/dashboard")
+ 
       }
     } catch (error) {
       console.error(error);
     }
   };
-
-  
 
   return (
     <div className="container container-fluid">
@@ -52,7 +52,7 @@ const Login = () => {
              
               <OktaLoginButton   icon={'1px'}
  onClick={() => signIn("orcid")}>
-  <span>Log in with ORC<span style={{color:'#a5ce39'}}>iD</span></span>
+  <span>Log in with ORCiD</span>
 </OktaLoginButton>
             </div>
           </form>

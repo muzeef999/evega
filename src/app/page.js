@@ -3,7 +3,6 @@ import Link from "next/link";
 import React from "react";
 import { signIn } from "next-auth/react";
 import { FacebookLoginButton, GithubLoginButton, GoogleLoginButton, LinkedInLoginButton, OktaLoginButton } from "react-social-login-buttons";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 const Home = () => {
@@ -23,10 +22,9 @@ const Home = () => {
       if (data?.error) {
         console.error(data.error);
       } else {
-        
-        console.log("login sucesufflyy ===================")
-    
-        router.push("/dashboard");
+        console.log("login sucess")
+       router.push("/dashboard")
+
       }
     } catch (error) {
       console.error(error);
