@@ -60,8 +60,8 @@ const Home = () => {
               <GoogleLoginButton onClick={() => signIn("google", { callbackUrl: "/dashboard" })} />
               <GithubLoginButton onClick={() => signIn("github", { callbackUrl: "/dashboard" })} />
               <LinkedInLoginButton onClick={() => signIn("linkedin", { callbackUrl: "/dashboard" })} />
-              <OktaLoginButton  icon={'1px'} onClick={() => signIn("orcid", { callbackUrl: "/dashboard" })}>
-              <span>Log in with ORCiD</span>
+              <OktaLoginButton  icon={'1px'} onClick={() => signIn("orcid", { callbackUrl: "/dashboard" })}><span style={{backgroundColor:'#a5ce39', color:'#FFF', padding:'5px 8px', borderRadius:'50px', marginLeft:'-40px'}}>iD</span>
+             &nbsp; <span>Log in with <span style={{color:'#aaabaf'}}>ORC</span><span style={{color:'#a5ce39'}}>iD</span></span>
                </OktaLoginButton>
             </div>
           </form>
