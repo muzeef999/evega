@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Modal, Button, Alert } from "react-bootstrap";
 import { GiCancel } from "react-icons/gi";
@@ -16,19 +16,27 @@ const FileUpload = () => {
   const [jsonOutput, setJsonOutput] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    if (fileData.length === 0) {
+      setErrorMessage("No data available in the CSV file.");
+    } else {
+      setErrorMessage(""); // Clear the error when fileData is populated
+    }
+  }, [fileData]);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
       const file = acceptedFiles[0];
       if (file) {
         if (file.type !== "text/csv") {
           setErrorMessage("Please upload a valid CSV file.");
-          setUploadedFile(null); // Clear previous file
-          setFileData([]); // Clear previous data
+          setUploadedFile(null);
+          setFileData([]);
           return;
         }
-        setErrorMessage(""); // Clear error message if CSV file is valid
+        setErrorMessage("");
         setUploadedFile(file);
-        setShowModal(true); // Show modal to ask if the file has headers
+        setShowModal(true);
       }
     },
     accept: ".csv",
@@ -63,13 +71,29 @@ const FileUpload = () => {
       }
       processCSV(csvString);
     };
+
+    reader.onerror = (error) => {
+      setErrorMessage("Error reading the file. Please try again" + error);
+    }
     reader.readAsText(uploadedFile);
   };
 
   const handleModalClose = (selection) => {
     setHasHeaders(selection);
     setShowModal(false);
-    handleFileRead();
+    if (selection !== null) {
+      handleFileRead();
+    }
+  };
+
+  // Generate labels like A, B, ..., Z, AA, AB, ...
+  const generateExcelColumnLabels = (index) => {
+    let label = "";
+    while (index >= 0) {
+      label = String.fromCharCode((index % 26) + 65) + label;
+      index = Math.floor(index / 26) - 1;
+    }
+    return label;
   };
 
   const handleLabelChange = (column, label) => {
@@ -81,10 +105,11 @@ const FileUpload = () => {
 
   const handleDone = () => {
     const mappedJson = fileData[0].reduce((acc, _, index) => {
-      const column = String.fromCharCode(65 + index); // Generate A, B, C...
+      const column = generateExcelColumnLabels(index);
       acc[column] = labels[column] || `No Label`;
       return acc;
     }, {});
+
     setJsonOutput(mappedJson);
   };
 
@@ -100,7 +125,6 @@ const FileUpload = () => {
 
   return (
     <div>
-      {/* File Drop Area */}
       <div
         {...getRootProps()}
         className="file-dropzone"
@@ -115,33 +139,28 @@ const FileUpload = () => {
         {isDragActive ? (
           <p>Drop your file here...</p>
         ) : (
-          <p>
-            Drag and drop a CSV file <b>or</b> click to upload
-          </p>
+          <p>Drag and drop a CSV file <b>or</b> click to upload</p>
         )}
       </div>
 
-      {/* Error Message */}
       {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
 
-      {/* Modal to confirm if file has headers */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>File Header Confirmation</Modal.Title>
+          <h6>Does your file have headers in the first row of the sheet?</h6>
         </Modal.Header>
         <Modal.Body>
           <div className="d-flex justify-content-between">
-            <button className="yes" onClick={() => handleModalClose(true)}>
-              <GrStatusGood /> Yes, Consider the 2<sup>nd</sup> row
+            <button className="no" onClick={() => handleModalClose(true)}>
+              <GrStatusGood /> Yes, Consider the 1<sup>st</sup> row
             </button>
-            <button className="no" onClick={() => handleModalClose(false)}>
-              <GiCancel /> No, Consider the 1<sup>st</sup> row
+            <button className="yes" onClick={() => handleModalClose(false)}>
+              <GiCancel /> No, Consider the 2<sup>nd</sup> row
             </button>
           </div>
         </Modal.Body>
       </Modal>
 
-      {/* Table Display */}
       {fileData.length > 0 && (
         <div>
           <h4>CSV Data:</h4>
@@ -156,7 +175,7 @@ const FileUpload = () => {
             <tbody>
               {fileData[0].map((_, colIndex) => (
                 <tr key={colIndex}>
-                  <td>{String.fromCharCode(65 + colIndex)}</td>
+                  <td>{generateExcelColumnLabels(colIndex)}</td>
                   <td>{fileData[0][colIndex]}</td>
                   <td>
                     <input
@@ -164,7 +183,7 @@ const FileUpload = () => {
                       placeholder="Enter label"
                       onChange={(e) =>
                         handleLabelChange(
-                          String.fromCharCode(65 + colIndex),
+                          generateExcelColumnLabels(colIndex),
                           e.target.value
                         )
                       }
@@ -174,28 +193,17 @@ const FileUpload = () => {
               ))}
             </tbody>
           </table>
-          <Button
-            variant="primary"
-            className="mt-3"
-            onClick={handleDone}
-            aria-label="Finalize Labels"
-          >
+          <Button variant="primary" className="mt-3" onClick={handleDone}>
             <AiOutlineFileDone /> Finalize
           </Button>
         </div>
       )}
 
-      {/* JSON Output */}
       {jsonOutput && (
         <div>
           <h4>Generated JSON:</h4>
           <pre>{JSON.stringify(jsonOutput, null, 2)}</pre>
-          <Button
-            variant="success"
-            className="mt-3"
-            onClick={downloadJSON}
-            aria-label="Download JSON"
-          >
+          <Button variant="success" className="mt-3" onClick={downloadJSON}>
             <FaDownload /> Download JSON
           </Button>
         </div>
