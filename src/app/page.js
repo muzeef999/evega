@@ -4,6 +4,7 @@ import React from "react";
 import { signIn, useSession } from "next-auth/react";
 import { FacebookLoginButton, GithubLoginButton, GoogleLoginButton, LinkedInLoginButton, OktaLoginButton } from "react-social-login-buttons";
 import { useRouter } from "next/navigation";
+import FileUpload from "./compoents/FileUpload";
 
 const Home = () => {
 
