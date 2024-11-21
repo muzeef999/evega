@@ -1,13 +1,23 @@
 "use client"
 import Link from "next/link";
 import React from "react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { FacebookLoginButton, GithubLoginButton, GoogleLoginButton, LinkedInLoginButton, OktaLoginButton } from "react-social-login-buttons";
 import { useRouter } from "next/navigation";
 
 const Login = () => {
 
   const router = useRouter();
+
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <div>Loading...</div>; // Optional loading state
+  }
+
+  if (session) {
+    <FileUpload /> // Optional unauthorized state
+  }
 
   const submitHandler = async (e) => {
     e.preventDefault();

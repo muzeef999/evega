@@ -5,13 +5,13 @@ import FileUpload from "../compoents/FileUpload";
 const Dashboard = () => {
   const { data: session, status } = useSession();
 
-  // if (status === "loading") {
-  //   return <div>Loading...</div>; // Optional loading state
-  // }
+  if (status === "loading") {
+    return <div>Loading...</div>; // Optional loading state
+  }
 
-  // if (!session) {
-  //   return <div>You are not authorized to view this page.</div>; // Optional unauthorized state
-  // }
+  if (!session) {
+    return <div>You are not authorized to view this page.</div>; // Optional unauthorized state
+  }
 
   return (
     <div className="container">
