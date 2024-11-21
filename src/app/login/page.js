@@ -3,8 +3,13 @@ import Link from "next/link";
 import React from "react";
 import { signIn } from "next-auth/react";
 import { FacebookLoginButton, GithubLoginButton, GoogleLoginButton, LinkedInLoginButton, OktaLoginButton } from "react-social-login-buttons";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
+
+  const router = useRouter();
+
+
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -18,8 +23,7 @@ const Login = () => {
       if (data?.error) {
         console.error(data.error);
       } else {
-        // Redirect to dashboard after successful login
-        window.location.href = '/dashboard';
+        router.push("/dashboard")
       }
     } catch (error) {
       console.error(error);
