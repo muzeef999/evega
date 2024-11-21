@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link";
 import React from "react";
 import { PiLockKeyThin, PiLockKeyOpenThin, PiUserCircleThin } from "react-icons/pi";
@@ -18,17 +19,17 @@ const Header = () => {
   };
 
   const handleClick = () => {
-    router.push('/login'); // Redirects to the /login page
-    toast.success("You have logged out successfully!");
+    router.push('/login'); 
+    
   };
 
   return (
     <nav className="navbar navbar-expand-lg sticky-top">
       <div className="container cont">
         <div className="col-3 p-0">
-          <a className="navbar-brand" style={{ marginLeft: "20px", color:'#FFF' }} href="#">
+          <span className="navbar-brand" style={{ marginLeft: "20px", color:'#FFF', cursor:'pointer' }}>
             Navabar
-          </a>
+          </span>
         </div>
 
 

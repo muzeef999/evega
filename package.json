@@ -12,7 +12,7 @@
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "csv-parser": "^3.0.0",
-    "next": "15.0.3",
+    "next": "^14.2.18",
     "next-auth": "^4.24.10",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.5",

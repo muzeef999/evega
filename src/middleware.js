@@ -1,14 +1,25 @@
 import { NextResponse } from 'next/server';
+import { getSession } from 'next-auth/react';
 
-export function middleware(req) {
+export async function middleware(req) {
   const url = req.nextUrl.clone();
-  
-  // Check if the request is for the root path
+
+  // Get the session to check if the user is authenticated
+  const session = await getSession({ req });
+
+  // Check if the user is trying to access the root path and is authenticated
   if (url.pathname === '/') {
-    url.pathname = '/login'; // Redirect to login
-    return NextResponse.redirect(url);
+    if (session) {
+      // If the user is authenticated, redirect to the dashboard
+      url.pathname = '/dashboard';
+      return NextResponse.redirect(url);
+    } else {
+      // If the user is not authenticated, redirect to login
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
   }
-  
+
   // Return NextResponse.next() if no redirection is needed
   return NextResponse.next();
 }
