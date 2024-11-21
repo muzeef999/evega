@@ -8,6 +8,8 @@ import FileUpload from "./compoents/FileUpload";
 
 const Home = () => {
 
+  
+  const router = useRouter();
   const { data: session, status } = useSession();
 
   if (status === "loading") {
@@ -18,7 +20,6 @@ const Home = () => {
     <FileUpload /> // Optional unauthorized state
   }
 
-  const router = useRouter();
 
   const submitHandler = async (e) => {
     e.preventDefault();
