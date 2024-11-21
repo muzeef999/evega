@@ -3,6 +3,7 @@ import React from "react";
 import { PiLockKeyThin, PiLockKeyOpenThin, PiUserCircleThin } from "react-icons/pi";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const Header = () => {
   const { data } = useSession();
@@ -12,9 +13,10 @@ const Header = () => {
 
   const handleLogout = () => {
     signOut();
+    console.log("checker");
     toast.success("You have logged out successfully!"); // Show success message after logging out
   };
-  
+
   const handleClick = () => {
     router.push('/login'); // Redirects to the /login page
   };

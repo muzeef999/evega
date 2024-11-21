@@ -27,7 +27,15 @@ export default function RootLayout({ children }) {
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <SessionProvider>
           <Header />
-        <ToastContainer />
+        <ToastContainer position="top-right" // Can customize position
+        autoClose={5000}     // Toast will close after 5 seconds
+        hideProgressBar={true} 
+        newestOnTop={false} 
+        closeOnClick={true}
+        rtl={false} 
+        pauseOnFocusLoss 
+        draggable 
+        pauseOnHover  />
         {children}
         </SessionProvider>
       </body>
