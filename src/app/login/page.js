@@ -3,9 +3,8 @@ import Link from "next/link";
 import React from "react";
 import { signIn } from "next-auth/react";
 import { FacebookLoginButton, GithubLoginButton, GoogleLoginButton, LinkedInLoginButton, OktaLoginButton } from "react-social-login-buttons";
-import { toast } from "react-toastify";
 
-const Home = () => {
+const Login = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -19,9 +18,6 @@ const Home = () => {
       if (data?.error) {
         console.error(data.error);
       } else {
-        
-        console.log("login sucesufflyy ===================")
-    
         // Redirect to dashboard after successful login
         window.location.href = '/dashboard';
       }
@@ -50,7 +46,7 @@ const Home = () => {
              
               <OktaLoginButton   icon={'1px'}
  onClick={() => signIn("orcid")}>
-  <span>Log in with ORCiD</span>
+  <span>Log in with ORC<span style={{color:'#a5ce39'}}>iD</span></span>
 </OktaLoginButton>
             </div>
           </form>
@@ -60,4 +56,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Login;
