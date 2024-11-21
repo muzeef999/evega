@@ -3,7 +3,6 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import LinkedInProvider from "next-auth/providers/linkedin";
 
-
 const myNextAuthOptions = {
   session: {
     strategy: "jwt",
@@ -22,13 +21,16 @@ const myNextAuthOptions = {
       },
       token: "https://orcid.org/oauth/token",
       userinfo: "https://pub.orcid.org/v3.0/me",
-      profile: (profile) => ({
-        id: profile.orcid,
-        name: `${profile["given-names"]} ${profile["family-name"]}`,
-        email: profile.email || null, // ORCID may not provide email
-      }),
+      profile: (profile) => {
+        // ORCID Profile Structure handling
+        return {
+          id: profile.orcid,
+          name: `${profile["given-names"]} ${profile["family-name"]}`, // Ensure the correct name structure
+          email: profile.email || null, // ORCID may not provide email
+          image: profile["picture-url"] || null, // Assuming you want the profile image
+        };
+      },
     },
- 
 
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,

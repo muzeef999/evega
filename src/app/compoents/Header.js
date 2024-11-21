@@ -48,7 +48,7 @@ const Header = () => {
                 Login
               </button>
         
-          )}
+          )} 
         </div>
       </div>
     </nav>
