@@ -1,32 +1,32 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
-// Check for session cookie directly in the request headers
 export async function middleware(req) {
   const url = req.nextUrl.clone();
-  
-  // Get cookies from the request
-  const cookies = req.cookies;
+  const isAuthenticated = req.cookies.get("next-auth.session-token"); // Adjust cookie name if necessary
 
-  // Check if there is an authentication cookie (e.g., `next-auth.session-token`)
-  const isAuthenticated = cookies['next-auth.session-token']; // Update with your actual cookie name if needed
-
-  // If the user is authenticated and trying to access the root, redirect to the dashboard
-  if (url.pathname === '/') {
+  // Redirect from root to dashboard if authenticated
+  if (url.pathname === "/") {
     if (isAuthenticated) {
-      url.pathname = '/dashboard';
+      url.pathname = "/dashboard";
       return NextResponse.redirect(url);
     } else {
-      // If not authenticated, redirect to login
-      url.pathname = '/login';
+      // Redirect to login if not authenticated
+      url.pathname = "/login";
       return NextResponse.redirect(url);
     }
   }
 
-  // Allow the request to proceed if no redirection is needed
+  // Redirect to login if trying to access /dashboard without being authenticated
+  if (url.pathname === "/dashboard" && !isAuthenticated) {
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  // Proceed with request if no redirection is needed
   return NextResponse.next();
 }
 
-// Optional: Configure the matcher if you want to limit where this middleware runs
+// Apply middleware only to specific routes
 export const config = {
-  matcher: '/', // This will apply the middleware only to the root path
+  matcher: ["/", "/dashboard"], // Apply to these routes
 };
