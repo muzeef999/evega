@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 
 export async function middleware(req) {
   const url = req.nextUrl.clone();
-  const isAuthenticated = req.cookies.get("next-auth.session-token"); // Adjust cookie name if necessary
+  const authCookie = "next-auth.session-token"; // Define cookie name here
+  const isAuthenticated = req.cookies.get(authCookie);
 
-  // Redirect authenticated users away from login
+  // Redirect authenticated users away from login page
   if (url.pathname === "/login" && isAuthenticated) {
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
@@ -16,11 +17,11 @@ export async function middleware(req) {
     return NextResponse.redirect(url);
   }
 
-  // Allow requests to proceed for other routes
+  // Proceed with the request for other routes
   return NextResponse.next();
 }
 
-// Apply middleware only to specific routes
+// Apply middleware only to login and dashboard routes
 export const config = {
-  matcher: ["/login", "/dashboard"], // Apply to these routes
+  matcher: ["/login", "/dashboard"],
 };
