@@ -24,6 +24,13 @@ const FileUpload = () => {
     }
   }, [fileData]);
 
+  useEffect(() => {
+    // Trigger file read after hasHeaders has been set
+    if (hasHeaders !== null && uploadedFile) {
+      handleFileRead();
+    }
+  }, [hasHeaders]);  // This ensures file is processed after hasHeaders state changes
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
       const file = acceptedFiles[0];
@@ -74,16 +81,13 @@ const FileUpload = () => {
 
     reader.onerror = (error) => {
       setErrorMessage("Error reading the file. Please try again" + error);
-    }
+    };
     reader.readAsText(uploadedFile);
   };
 
   const handleModalClose = (selection) => {
     setHasHeaders(selection);
     setShowModal(false);
-    if (selection !== null) {
-      handleFileRead();
-    }
   };
 
   // Generate labels like A, B, ..., Z, AA, AB, ...
@@ -152,10 +156,11 @@ const FileUpload = () => {
         <Modal.Body>
           <div className="d-flex justify-content-between">
             <button className="no" onClick={() => handleModalClose(true)}>
-              <GrStatusGood /> Yes, Consider the 1<sup>st</sup> row
+            <GiCancel /> No, Consider the 2<sup>nd</sup> row
             </button>
             <button className="yes" onClick={() => handleModalClose(false)}>
-              <GiCancel /> No, Consider the 2<sup>nd</sup> row
+              
+              <GrStatusGood /> Yes, Consider the 1<sup>st</sup> row
             </button>
           </div>
         </Modal.Body>
