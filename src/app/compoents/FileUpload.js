@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Alert } from "react-bootstrap";
 import { GiCancel } from "react-icons/gi";
 import { GrStatusGood } from "react-icons/gr";
 import { FaDownload } from "react-icons/fa6";
