@@ -1,8 +1,10 @@
 "use client"
 import { useSession } from "next-auth/react";
 import FileUpload from "../compoents/FileUpload";
+import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
+  const router = useRouter();
   const { data: session, status } = useSession();
 
   if (status === "loading") {
@@ -10,7 +12,7 @@ const Dashboard = () => {
   }
 
   if (!session) {
-    return <div>You are not authorized to view this page.</div>; // Optional unauthorized state
+    router.push("/login")
   }
 
   return (
