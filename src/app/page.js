@@ -45,14 +45,12 @@ const Home = () => {
             <hr/>
             <div className="text-center">
               <p>Or sign up with</p>
-              <GoogleLoginButton onClick={() => signIn("google")} />
-              <GithubLoginButton onClick={() => signIn("github")} />
-              <LinkedInLoginButton onClick={() => signIn("linkedin")} />
-             
-              <OktaLoginButton   icon={'1px'}
- onClick={() => signIn("orcid")}>
-  <span>Log in with ORCiD</span>
-</OktaLoginButton>
+              <GoogleLoginButton onClick={() => signIn("google", { callbackUrl: "/dashboard" })} />
+              <GithubLoginButton onClick={() => signIn("github", { callbackUrl: "/dashboard" })} />
+              <LinkedInLoginButton onClick={() => signIn("linkedin", { callbackUrl: "/dashboard" })} />
+              <OktaLoginButton  icon={'1px'} onClick={() => signIn("orcid", { callbackUrl: "/dashboard" })}>
+              <span>Log in with ORCiD</span>
+               </OktaLoginButton>
             </div>
           </form>
         </div>
