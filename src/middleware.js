@@ -1,26 +1,28 @@
 import { NextResponse } from 'next/server';
-import { getSession } from 'next-auth/react';
 
+// Check for session cookie directly in the request headers
 export async function middleware(req) {
   const url = req.nextUrl.clone();
+  
+  // Get cookies from the request
+  const cookies = req.cookies;
 
-  // Get the session to check if the user is authenticated
-  const session = await getSession({ req });
+  // Check if there is an authentication cookie (e.g., `next-auth.session-token`)
+  const isAuthenticated = cookies['next-auth.session-token']; // Update with your actual cookie name if needed
 
-  // Check if the user is trying to access the root path and is authenticated
+  // If the user is authenticated and trying to access the root, redirect to the dashboard
   if (url.pathname === '/') {
-    if (session) {
-      // If the user is authenticated, redirect to the dashboard
+    if (isAuthenticated) {
       url.pathname = '/dashboard';
       return NextResponse.redirect(url);
     } else {
-      // If the user is not authenticated, redirect to login
+      // If not authenticated, redirect to login
       url.pathname = '/login';
       return NextResponse.redirect(url);
     }
   }
 
-  // Return NextResponse.next() if no redirection is needed
+  // Allow the request to proceed if no redirection is needed
   return NextResponse.next();
 }
 
