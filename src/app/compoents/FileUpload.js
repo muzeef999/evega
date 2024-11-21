@@ -5,6 +5,7 @@ import { GiCancel } from "react-icons/gi";
 import { GrStatusGood } from "react-icons/gr";
 import { FaDownload } from "react-icons/fa6";
 import { AiOutlineFileDone } from "react-icons/ai";
+import { toast } from "react-toastify";
 
 const FileUpload = () => {
   const [fileData, setFileData] = useState([]);
@@ -19,6 +20,13 @@ const FileUpload = () => {
     onDrop: (acceptedFiles) => {
       const file = acceptedFiles[0];
       if (file) {
+        if (file.type !== "text/csv") {
+          setErrorMessage("Please upload a valid CSV file.");
+          setUploadedFile(null); // Clear previous file
+          setFileData([]); // Clear previous data
+          return;
+        }
+        setErrorMessage(""); // Clear error message if CSV file is valid
         setUploadedFile(file);
         setShowModal(true); // Show modal to ask if the file has headers
       }
@@ -49,6 +57,11 @@ const FileUpload = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const csvString = event.target.result;
+      if (!csvString.trim()) {
+        setErrorMessage("The file is empty. Please upload a valid CSV file.");
+        toast.error("The file is empty. Please upload a valid CSV file")
+        return;
+      }
       processCSV(csvString);
     };
     reader.readAsText(uploadedFile);
@@ -108,6 +121,10 @@ const FileUpload = () => {
           </p>
         )}
       </div>
+
+      {/* Error Message */}
+      {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+
 
       {/* Modal to confirm if file has headers */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
