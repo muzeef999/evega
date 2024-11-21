@@ -4,16 +4,16 @@ import FileUpload from "../compoents/FileUpload";
 import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
-  // const router = useRouter();
-  // const { data: session, status } = useSession();
+  const router = useRouter();
+  const { data: session, status } = useSession();
 
-  // if (status === "loading") {
-  //   return <div>Loading...</div>; // Optional loading state
-  // }
+  if (status === "loading") {
+    return <div>Loading...</div>; // Optional loading state
+  }
 
-  // if (!session) {
-  //   router.push("/login")
-  // }
+  if (!session) {
+    router.push("/login")
+  }
 
   return (
     <div className="container">
