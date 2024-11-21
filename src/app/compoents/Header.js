@@ -3,7 +3,6 @@ import React from "react";
 import { PiLockKeyThin, PiLockKeyOpenThin, PiUserCircleThin } from "react-icons/pi";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 const Header = () => {
   const { data } = useSession();
@@ -29,7 +28,7 @@ const Header = () => {
           {data?.user ? (
             <div className="d-flex justify-content-center align-items-center">
               <div className="d-flex justify-content-center align-items-center" style={{color:'#FFF'}}>
-                <Image style={{borderRadius:'50%', border:'1px solid #FFF'}}
+                <img style={{borderRadius:'50%', border:'1px solid #FFF'}}
                   src={data?.user?.image}
                   height="32"
                   width="32"
