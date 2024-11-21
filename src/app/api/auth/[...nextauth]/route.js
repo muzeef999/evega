@@ -48,6 +48,7 @@ const myNextAuthOptions = {
     error: "/api/auth/error",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  debug: true,
 };
 
 export const GET = (req, res) => NextAuth(req, res, myNextAuthOptions);
