@@ -6,21 +6,18 @@ export async function middleware(req) {
   const isAuthenticated = req.cookies.get(authCookie);
 
 
-  console.log("Middleware triggered");
-  console.log("Requested URL:", url.pathname);
-  console.log("Is Authenticated:", !!isAuthenticated);
-  
+
   // Redirect authenticated users away from login page
   if (url.pathname === "/login" && isAuthenticated) {
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
 
-  // Redirect unauthenticated users away from dashboard
-  if (url.pathname === "/dashboard" && !isAuthenticated) {
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
+  // // Redirect unauthenticated users away from dashboard
+  // if (url.pathname === "/dashboard" && !isAuthenticated) {
+  //   url.pathname = "/login";
+  //   return NextResponse.redirect(url);
+  // }
 
   // Proceed with the request for other routes
   return NextResponse.next();
