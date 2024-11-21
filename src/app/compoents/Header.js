@@ -13,8 +13,8 @@ const Header = () => {
 
   const handleLogout = () => {
     signOut();
-    console.log("checker");
     toast.success("You have logged out successfully!"); // Show success message after logging out
+    router.push('/login');
   };
 
   const handleClick = () => {
