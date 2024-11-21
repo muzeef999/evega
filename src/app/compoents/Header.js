@@ -10,6 +10,10 @@ const Header = () => {
 
   const router = useRouter();
 
+  const handleLogout = () => {
+    signOut();
+    toast.success("You have logged out successfully!"); // Show success message after logging out
+  };
   
   const handleClick = () => {
     router.push('/login'); // Redirects to the /login page
@@ -36,7 +40,7 @@ const Header = () => {
                 />&nbsp;
                 Hi, {data?.user?.name}&nbsp;
               </div>
-              <button style={{padding:'10px 12px'}} className="d-flex justify-content-center align-items-center admin_button" onClick={() => signOut()}>
+              <button style={{padding:'10px 12px'}} className="d-flex justify-content-center align-items-center admin_button" onClick={handleLogout}>
               <PiLockKeyThin />&nbsp;
                 Logout
               </button>

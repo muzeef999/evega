@@ -21,15 +21,12 @@ const myNextAuthOptions = {
       },
       token: "https://orcid.org/oauth/token",
       userinfo: "https://pub.orcid.org/v3.0/me",
-      profile: (profile) => {
-        // ORCID Profile Structure handling
-        return {
-          id: profile.orcid,
-          name: `${profile["given-names"]} ${profile["family-name"]}`, // Ensure the correct name structure
-          email: profile.email || null, // ORCID may not provide email
-          image: profile["picture-url"] || null, // Assuming you want the profile image
-        };
-      },
+      profile: (profile) => ({
+        id: profile.orcid,
+        name: `${profile["given-names"]} ${profile["family-name"]}`,
+        email: profile.email || null,
+        image: profile["picture-url"] || null,
+      }),
     },
 
     LinkedInProvider({
