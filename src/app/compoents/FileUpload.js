@@ -1,4 +1,3 @@
-"use client"
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Modal, Button, Alert } from "react-bootstrap";
@@ -6,7 +5,6 @@ import { GiCancel } from "react-icons/gi";
 import { GrStatusGood } from "react-icons/gr";
 import { FaDownload } from "react-icons/fa6";
 import { AiOutlineFileDone } from "react-icons/ai";
-import { toast } from "react-toastify";
 
 const FileUpload = () => {
   const [fileData, setFileData] = useState([]);
@@ -16,6 +14,7 @@ const FileUpload = () => {
   const [showModal, setShowModal] = useState(false);
   const [labels, setLabels] = useState({});
   const [jsonOutput, setJsonOutput] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -60,7 +59,6 @@ const FileUpload = () => {
       const csvString = event.target.result;
       if (!csvString.trim()) {
         setErrorMessage("The file is empty. Please upload a valid CSV file.");
-        toast.error("The file is empty. Please upload a valid CSV file")
         return;
       }
       processCSV(csvString);
@@ -126,7 +124,6 @@ const FileUpload = () => {
       {/* Error Message */}
       {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
 
-
       {/* Modal to confirm if file has headers */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -134,17 +131,11 @@ const FileUpload = () => {
         </Modal.Header>
         <Modal.Body>
           <div className="d-flex justify-content-between">
-            <button
-              className="yes"
-              onClick={() => handleModalClose(true)}
-            >
-              <GrStatusGood /> Yes, Consider the 2<sup>nd</sup> row 
+            <button className="yes" onClick={() => handleModalClose(true)}>
+              <GrStatusGood /> Yes, Consider the 2<sup>nd</sup> row
             </button>
-            <button
-              className="no"
-              onClick={() => handleModalClose(false)}
-            >
-              <GiCancel /> No, Consider the 1<sup>st</sup> row 
+            <button className="no" onClick={() => handleModalClose(false)}>
+              <GiCancel /> No, Consider the 1<sup>st</sup> row
             </button>
           </div>
         </Modal.Body>
@@ -172,7 +163,10 @@ const FileUpload = () => {
                       type="text"
                       placeholder="Enter label"
                       onChange={(e) =>
-                        handleLabelChange(String.fromCharCode(65 + colIndex), e.target.value)
+                        handleLabelChange(
+                          String.fromCharCode(65 + colIndex),
+                          e.target.value
+                        )
                       }
                     />
                   </td>
