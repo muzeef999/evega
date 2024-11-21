@@ -5,6 +5,11 @@ export async function middleware(req) {
   const authCookie = "next-auth.session-token"; // Define cookie name here
   const isAuthenticated = req.cookies.get(authCookie);
 
+
+  console.log("Middleware triggered");
+  console.log("Requested URL:", url.pathname);
+  console.log("Is Authenticated:", !!isAuthenticated);
+  
   // Redirect authenticated users away from login page
   if (url.pathname === "/login" && isAuthenticated) {
     url.pathname = "/dashboard";
