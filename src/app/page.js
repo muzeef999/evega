@@ -17,7 +17,7 @@ const Home = () => {
   }
 
   if (session) {
-    <FileUpload /> // Optional unauthorized state
+    router.push("/dashboard");
   }
 
 

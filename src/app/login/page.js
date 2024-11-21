@@ -17,7 +17,7 @@ const Login = () => {
   }
 
   if (session) {
-    <FileUpload /> // Optional unauthorized state
+    router.push("/dashboard");
   }
 
   const submitHandler = async (e) => {
