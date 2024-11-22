@@ -155,13 +155,13 @@ const FileUpload = () => {
         </Modal.Header>
         <Modal.Body>
           <div className="d-flex justify-content-between">
-            <button className="no" onClick={() => handleModalClose(true)}>
-            <GiCancel /> No, Consider the 2<sup>nd</sup> row
+            <button className="yes" onClick={() => handleModalClose(true)}>
+            <GrStatusGood /> Yes, Consider the 2<sup>nd</sup> row
+
             </button>
-            <button className="yes" onClick={() => handleModalClose(false)}>
-              
-              <GrStatusGood /> Yes, Consider the 1<sup>st</sup> row
-            </button>
+            <button className="no" onClick={() => handleModalClose(false)}>
+            <GiCancel /> No, Consider the 1<sup>st</sup> row              
+                          </button>
           </div>
         </Modal.Body>
       </Modal>

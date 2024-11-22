@@ -17,7 +17,7 @@ const myNextAuthOptions = {
       clientSecret: process.env.ORCID_CLIENT_SECRET,
       authorization: {
         url: "https://orcid.org/oauth/authorize",
-        params: { scope: "/dashboard" },
+        params: { scope: "/authenticate" }, // Replace with a valid scope
       },
       token: "https://orcid.org/oauth/token",
       userinfo: "https://pub.orcid.org/v3.0/me",
