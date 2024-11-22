@@ -1,14 +1,28 @@
 "use client"
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { FacebookLoginButton, GithubLoginButton, GoogleLoginButton, LinkedInLoginButton, OktaLoginButton } from "react-social-login-buttons";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import FileUpload from "../compoents/FileUpload";
 
 const Login = () => {
 
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // Get the callbackUrl from the searchParams (query parameters)
+    const callbackUrl = searchParams.get('callbackUrl');
+
+    if (callbackUrl) {
+      const decodedUrl = decodeURIComponent(callbackUrl);
+      console.log('Decoded Callback URL:', decodedUrl);
+    }
+  }, [searchParams]); // This will rerun when searchParams change
+
+
 
   const { data: session, status } = useSession();
 

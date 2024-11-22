@@ -44,12 +44,14 @@ const myNextAuthOptions = {
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
-      console.log("Redirect URL:", url);
-      console.log("Base URL:", baseUrl);
-      return url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`;
-    },
+      // Log and decode the callbackUrl to verify
+      const decodedUrl = decodeURIComponent(url);
+      console.log("Decoded URL:", decodedUrl);
+
+      return url.startsWith(baseUrl) ? url : baseUrl;
+
   },
-  
+},
   pages: {
     signIn: "/login",
     error: "/api/auth/error",

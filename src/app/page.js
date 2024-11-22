@@ -1,9 +1,9 @@
 "use client"
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { FacebookLoginButton, GithubLoginButton, GoogleLoginButton, LinkedInLoginButton, OktaLoginButton } from "react-social-login-buttons";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import FileUpload from "./compoents/FileUpload";
 
 const Home = () => {
@@ -11,6 +11,20 @@ const Home = () => {
   
   const router = useRouter();
   const { data: session, status } = useSession();
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // Get the callbackUrl from the searchParams (query parameters)
+    const callbackUrl = searchParams.get('callbackUrl');
+
+    if (callbackUrl) {
+      const decodedUrl = decodeURIComponent(callbackUrl);
+      console.log('Decoded Callback URL:', decodedUrl);
+    }
+  }, [searchParams]); // This will rerun when searchParams change
+
+
 
   if (status === "loading") {
     return <div>Loading...</div>; // Optional loading state
@@ -56,7 +70,7 @@ const Home = () => {
             </center>
             <hr/>
             <div className="text-center">
-              <p>Or sign up with</p>
+              <p>sign up with</p>
               <GoogleLoginButton onClick={() => signIn("google", { callbackUrl: "/dashboard" })} />
               <GithubLoginButton onClick={() => signIn("github", { callbackUrl: "/dashboard" })} />
               <LinkedInLoginButton onClick={() => signIn("linkedin", { callbackUrl: "/dashboard" })} />
