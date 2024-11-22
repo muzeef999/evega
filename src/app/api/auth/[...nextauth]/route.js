@@ -32,6 +32,7 @@ const myNextAuthOptions = {
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+      scope: 'r_liteprofile r_emailaddress',
     }),
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
@@ -43,15 +44,14 @@ const myNextAuthOptions = {
     }),
   ],
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      // Log and decode the callbackUrl to verify
-      const decodedUrl = decodeURIComponent(url);
-      console.log("Decoded URL:", decodedUrl);
-
-      return url.startsWith(baseUrl) ? url : baseUrl;
-
+    async signIn(user, account, profile) {
+      console.log('User  Profile:', profile);
+      return true; // Allow sign in
+    },
+    async redirect(url, baseUrl) {
+      return baseUrl; // Redirect to base URL after sign in
+    },
   },
-},
   pages: {
     signIn: "/login",
     error: "/api/auth/error",
