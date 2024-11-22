@@ -32,35 +32,42 @@ const myNextAuthOptions = {
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+      authorization: {
+        url: "https://www.linkedin.com/oauth/v2/authorization",
+        params: {
+          scope: "r_liteprofile r_emailaddress", // Default scopes
+        },
+      },
       token: {
         url: "https://www.linkedin.com/oauth/v2/accessToken",
-        async request({
-                          client,
-                          params,
-                          checks,
-                          provider
-                      }) {
+        async request({ client, params, checks, provider }) {
+          try {
             const response = await client.oauthCallback(provider.callbackUrl, params, checks, {
-                exchangeBody: {
-                    client_id: process.env.LINKEDIN_CLIENT_ID,
-                    client_secret: process.env.LINKEDIN_CLIENT_SECRET,
-                }
+              exchangeBody: {
+                client_id: process.env.LINKEDIN_CLIENT_ID,
+                client_secret: process.env.LINKEDIN_CLIENT_SECRET,
+              },
             });
-            return {
-                tokens: response
-            };
-        }
-    },
+            return { tokens: response };  // Ensure you're returning the correct token data
+          } catch (error) {
+            console.error("Error during LinkedIn OAuth callback:", error);
+            throw new Error("LinkedIn OAuth callback failed.");
+          }
+        },
+      },
     }),
+
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
     }),
+
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+
   callbacks: {
     async jwt({ token, account }) {
       // Persist the OAuth access_token to the token right after signin
@@ -69,16 +76,35 @@ const myNextAuthOptions = {
       }
       return token;
     },
+
     async session({ session, token, user }) {
       // Send access token to the client (to then save it in the database)
       session.user.token = token.accessToken;
       return session;
     },
+
+    async redirect({ baseUrl, url }) {
+      // Log and decode the URL to verify
+      console.log("===== REDIRECT =====");
+      console.log("BASE URL", baseUrl);
+      console.log("URL", url);
+
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+
+      // Fallback to dashboard if any issues with the URL
+      return `${baseUrl}/dashboard`; 
+    },
   },
+
   pages: {
     signIn: "/login",
     error: "/api/auth/error",
   },
+
   secret: process.env.NEXTAUTH_SECRET,
   debug: true,
 };
