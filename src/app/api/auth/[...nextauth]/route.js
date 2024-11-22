@@ -32,12 +32,7 @@ const myNextAuthOptions = {
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-      authorization: {
-        url: "https://www.linkedin.com/oauth/v2/authorization",
-        params: {
-          scope: "r_liteprofile r_emailaddress", // Default scopes
-        },
-      },
+      
     }),
     GitHubProvider({
       clientId: process.env.GITHUB_ID,

@@ -15,7 +15,7 @@ const Header = () => {
   const handleLogout = () => {
     signOut();
     toast.success("You have logged out successfully!"); 
-    router.push('/login');
+    // router.push('/login');
   };
 
   const handleClick = () => {
