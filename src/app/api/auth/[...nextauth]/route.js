@@ -32,18 +32,25 @@ const myNextAuthOptions = {
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-      profile: async (profile) => {
-        const response = await axios.get(
-          "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))",
-          { headers: { Authorization: `Bearer ${profile.access_token}` } }
-        );
-        return {
-          id: profile.id,
-          name: `${profile.localizedFirstName} ${profile.localizedLastName}`,
-          email: response.data.elements[0]["handle~"].emailAddress,
-          image: profile.profilePicture["displayImage~"].elements[0].identifiers[0].identifier,
-        };
-      },
+      token: {
+        url: "https://www.linkedin.com/oauth/v2/accessToken",
+        async request({
+                          client,
+                          params,
+                          checks,
+                          provider
+                      }) {
+            const response = await client.oauthCallback(provider.callbackUrl, params, checks, {
+                exchangeBody: {
+                    client_id: process.env.LINKEDIN_CLIENT_ID,
+                    client_secret: process.env.LINKEDIN_CLIENT_SECRET,
+                }
+            });
+            return {
+                tokens: response
+            };
+        }
+    },
     }),
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
