@@ -45,13 +45,15 @@ const myNextAuthOptions = {
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Log and decode the callbackUrl to verify
+      // Decode the URL to ensure it's readable and not encoded
       const decodedUrl = decodeURIComponent(url);
       console.log("Decoded URL:", decodedUrl);
-
-      return url.startsWith(baseUrl) ? url : baseUrl;
-
-  },
+      console.log("ch");
+  
+      // Redirect to '/dashboard' if the decoded URL is valid or falls under the expected condition
+      // You can replace this with your condition if needed, or just default to /dashboard
+      return decodedUrl.startsWith(baseUrl) ? '/dashboard' : '/dashboard';
+    },  
 },
   pages: {
     signIn: "/login",
