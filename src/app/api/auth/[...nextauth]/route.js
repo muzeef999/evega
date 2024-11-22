@@ -78,8 +78,9 @@ const myNextAuthOptions = {
     },
 
     async session({ session, token, user }) {
-      // Send access token to the client (to then save it in the database)
-      session.user.token = token.accessToken;
+      if (token) {
+        session.accessToken = token.accessToken;
+      }
       return session;
     },
 
@@ -103,6 +104,11 @@ const myNextAuthOptions = {
   pages: {
     signIn: "/login",
     error: "/api/auth/error",
+  },
+  events: {
+    error: async (error) => {
+      console.error("NextAuth Error:", error);
+    },
   },
 
   secret: process.env.NEXTAUTH_SECRET,
