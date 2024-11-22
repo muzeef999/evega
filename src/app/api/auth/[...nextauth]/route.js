@@ -44,14 +44,15 @@ const myNextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn(user, account, profile) {
-      console.log('User  Profile:', profile);
-      return true; // Allow sign in
-    },
-    async redirect(url, baseUrl) {
-      return baseUrl; // Redirect to base URL after sign in
-    },
+    async redirect({ url, baseUrl }) {
+      // Log and decode the callbackUrl to verify
+      const decodedUrl = decodeURIComponent(url);
+      console.log("Decoded URL:", decodedUrl);
+
+      return url.startsWith(baseUrl) ? url : baseUrl;
+
   },
+},
   pages: {
     signIn: "/login",
     error: "/api/auth/error",
