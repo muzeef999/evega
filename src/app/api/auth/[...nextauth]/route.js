@@ -32,7 +32,12 @@ const myNextAuthOptions = {
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-      scope: 'r_liteprofile r_emailaddress',
+      authorization: {
+        url: "https://www.linkedin.com/oauth/v2/authorization",
+        params: {
+          scope: "r_liteprofile r_emailaddress", // Default scopes
+        },
+      },
     }),
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
@@ -44,17 +49,32 @@ const myNextAuthOptions = {
     }),
   ],
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      // Decode the URL to ensure it's readable and not encoded
-      const decodedUrl = decodeURIComponent(url);
-      console.log("Decoded URL:", decodedUrl);
-      console.log("ch");
+    async signIn({ user, account, profile }) {
+      console.log("Sign-In Callback Triggered:", { user, account, profile });
+      
+      // Ensure LinkedIn and ORCID profiles return the expected data
+      if (account.provider === "linkedin") {
+        if (!profile || !profile.localizedFirstName) {
+          console.error("LinkedIn Profile is incomplete:", profile);
+          return false; // Reject sign-in
+        }
+      }
   
-      // Redirect to '/dashboard' if the decoded URL is valid or falls under the expected condition
-      // You can replace this with your condition if needed, or just default to /dashboard
-      return decodedUrl.startsWith(baseUrl) ? '/dashboard' : '/dashboard';
-    },  
-},
+      if (account.provider === "orcid") {
+        if (!profile || !profile.orcid) {
+          console.error("ORCID Profile is incomplete:", profile);
+          return false; // Reject sign-in
+        }
+      }
+  
+      return true; // Allow sign-in
+    },
+  
+    async redirect({ url, baseUrl }) {
+      console.log("Redirect Callback Triggered:", { url, baseUrl });
+      return "/dashboard"; // Always redirect to dashboard
+    },
+  },
   pages: {
     signIn: "/login",
     error: "/api/auth/error",
