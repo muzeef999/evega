@@ -32,7 +32,18 @@ const myNextAuthOptions = {
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-      
+      profile: async (profile) => {
+        const response = await axios.get(
+          "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))",
+          { headers: { Authorization: `Bearer ${profile.access_token}` } }
+        );
+        return {
+          id: profile.id,
+          name: `${profile.localizedFirstName} ${profile.localizedLastName}`,
+          email: response.data.elements[0]["handle~"].emailAddress,
+          image: profile.profilePicture["displayImage~"].elements[0].identifiers[0].identifier,
+        };
+      },
     }),
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
@@ -44,30 +55,17 @@ const myNextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
-      console.log("Sign-In Callback Triggered:", { user, account, profile });
-      
-      // Ensure LinkedIn and ORCID profiles return the expected data
-      if (account.provider === "linkedin") {
-        if (!profile || !profile.localizedFirstName) {
-          console.error("LinkedIn Profile is incomplete:", profile);
-          return false; // Reject sign-in
-        }
+    async jwt({ token, account }) {
+      // Persist the OAuth access_token to the token right after signin
+      if (account) {
+        token.accessToken = account.access_token;
       }
-  
-      if (account.provider === "orcid") {
-        if (!profile || !profile.orcid) {
-          console.error("ORCID Profile is incomplete:", profile);
-          return false; // Reject sign-in
-        }
-      }
-  
-      return true; // Allow sign-in
+      return token;
     },
-  
-    async redirect({ url, baseUrl }) {
-      console.log("Redirect Callback Triggered:", { url, baseUrl });
-      return "/dashboard"; // Always redirect to dashboard
+    async session({ session, token, user }) {
+      // Send access token to the client (to then save it in the database)
+      session.user.token = token.accessToken;
+      return session;
     },
   },
   pages: {
