@@ -28,7 +28,7 @@ const Header = () => {
       <div className="container cont">
         <div className="col-3 p-0">
           <span className="navbar-brand" style={{ marginLeft: "20px", color:'#FFF', cursor:'pointer' }}>
-            Navabar
+          <b>eVega!</b>
           </span>
         </div>
 

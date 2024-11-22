@@ -56,7 +56,7 @@ const Login = () => {
             </center>
             <hr/>
             <div className="text-center">
-              <p>Or sign up with</p>
+              <p>Sign in with</p>
               <GoogleLoginButton onClick={() => signIn("google", { callbackUrl: "/dashboard" })} />
               <GithubLoginButton onClick={() => signIn("github", { callbackUrl: "/dashboard" })} />
               <LinkedInLoginButton onClick={() => signIn("linkedin", { callbackUrl: "/dashboard" })} />
