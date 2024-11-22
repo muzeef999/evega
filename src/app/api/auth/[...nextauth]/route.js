@@ -42,6 +42,12 @@ const myNextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Redirect user to dashboard by default
+      return url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`;
+    },
+  },
   pages: {
     signIn: "/login",
     error: "/api/auth/error",
