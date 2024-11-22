@@ -13,11 +13,13 @@ export async function middleware(req) {
     return NextResponse.redirect(url);
   }
 
-  // // Redirect unauthenticated users away from dashboard
-  // if (url.pathname === "/dashboard" && !isAuthenticated) {
-  //   url.pathname = "/login";
-  //   return NextResponse.redirect(url);
-  // }
+  
+
+  // Redirect unauthenticated users away from dashboard
+  if (url.pathname === "/dashboard" && !isAuthenticated) {
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
 
   // Proceed with the request for other routes
   return NextResponse.next();

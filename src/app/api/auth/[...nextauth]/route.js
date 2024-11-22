@@ -17,44 +17,24 @@ const myNextAuthOptions = {
       clientSecret: process.env.ORCID_CLIENT_SECRET,
       authorization: {
         url: "https://orcid.org/oauth/authorize",
-        params: { scope: "/authenticate" }, // Replace with a valid scope
+        params: { scope: "/authenticate" },
       },
       token: "https://orcid.org/oauth/token",
       userinfo: "https://pub.orcid.org/v3.0/me",
-      profile: (profile) => ({
-        id: profile.orcid,
-        name: `${profile["given-names"]} ${profile["family-name"]}`,
-        email: profile.email || null,
-        image: profile["picture-url"] || null,
-      }),
+      profile(profile) {
+        return {
+          id: profile.orcid,
+          name: `${profile["given-names"]} ${profile["family-names"]}`,
+          email: profile.email || null,
+          image: profile["picture-url"] || null,
+        };
+      },
     },
 
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-      authorization: {
-        url: "https://www.linkedin.com/oauth/v2/authorization",
-        params: {
-          scope: "r_liteprofile r_emailaddress", // Default scopes
-        },
-      },
-      token: {
-        url: "https://www.linkedin.com/oauth/v2/accessToken",
-        async request({ client, params, checks, provider }) {
-          try {
-            const response = await client.oauthCallback(provider.callbackUrl, params, checks, {
-              exchangeBody: {
-                client_id: process.env.LINKEDIN_CLIENT_ID,
-                client_secret: process.env.LINKEDIN_CLIENT_SECRET,
-              },
-            });
-            return { tokens: response };  // Ensure you're returning the correct token data
-          } catch (error) {
-            console.error("Error during LinkedIn OAuth callback:", error);
-            throw new Error("LinkedIn OAuth callback failed.");
-          }
-        },
-      },
+      callbackUrl: "/api/auth/callback",
     }),
 
     GitHubProvider({
@@ -69,41 +49,18 @@ const myNextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, account }) {
-      // Persist the OAuth access_token to the token right after signin
-      if (account) {
-        token.accessToken = account.access_token;
-      }
-      return token;
+    
+    async signIn({ user, account, profile }) {
+      // Redirect to the dashboard after successful sign-in
+      return true; // Redirect to the sign-in page
     },
 
-    async session({ session, token, user }) {
-      if (token) {
-        session.accessToken = token.accessToken;
-      }
-      return session;
-    },
-
-    async redirect({ baseUrl, url }) {
-      // Log and decode the URL to verify
-      console.log("===== REDIRECT =====");
-      console.log("BASE URL", baseUrl);
-      console.log("URL", url);
-
-      // Allows relative callback URLs
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-
-      // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url;
-
-      // Fallback to dashboard if any issues with the URL
-      return `${baseUrl}/dashboard`; 
-    },
   },
 
   pages: {
     signIn: "/login",
     error: "/api/auth/error",
+    dashboard: "/dashboard",
   },
   events: {
     error: async (error) => {
