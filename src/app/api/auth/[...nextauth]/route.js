@@ -44,10 +44,12 @@ const myNextAuthOptions = {
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Redirect user to dashboard by default
+      console.log("Redirect URL:", url);
+      console.log("Base URL:", baseUrl);
       return url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`;
     },
   },
+  
   pages: {
     signIn: "/login",
     error: "/api/auth/error",
