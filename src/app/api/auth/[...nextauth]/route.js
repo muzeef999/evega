@@ -36,14 +36,22 @@ const myNextAuthOptions = {
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-      wellKnown: 'https://www.linkedin.com/oauth/.well-known/openid-configuration',
       authorization: {
-        params: {
-          scope: "openid profile email",
-        }
+        params: { scope: 'openid profile email' },
       },
-
-    }),
+      issuer: 'https://www.linkedin.com',
+      jwks_endpoint: 'https://www.linkedin.com/oauth/openid/jwks',
+      profile(profile, tokens) {
+        const defaultImage =
+          'https://cdn-icons-png.flaticon.com/512/174/174857.png';
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture ?? defaultImage,
+        };
+      },
+   }),
 
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
