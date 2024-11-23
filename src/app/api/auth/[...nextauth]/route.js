@@ -36,10 +36,11 @@ const myNextAuthOptions = {
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+      wellKnown: 'https://www.linkedin.com/oauth/.well-known/openid-configuration',
       authorization: {
         params: {
-          scope: "r_liteprofile r_emailaddress", // Request necessary permissions
-        },
+          scope: "openid profile email",
+        }
       },
 
     }),
