@@ -13,22 +13,19 @@ const myNextAuthOptions = {
       name: "ORCID",
       type: "oauth",
       version: "2.0",
+      scope: "/authenticate",
+      params: { grant_type: "authorization_code" },
+      accessTokenUrl: "https://orcid.org/oauth/token",
+      authorizationUrl:
+        "https://orcid.org/oauth/authorize?response_type=code",
+      profileUrl: "https://pub.orcid.org/v3.0/~/record",
       clientId: process.env.ORCID_CLIENT_ID,
       clientSecret: process.env.ORCID_CLIENT_SECRET,
-      authorization: {
-        url: "https://orcid.org/oauth/authorize",
-        params: { scope: "/authenticate",
-          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/orcid`,
-         },
-      },
-      token: "https://orcid.org/oauth/token",
-      userinfo: "https://pub.orcid.org/v3.0/me",
-      profile(profile) {
-        return {
-          id: profile.orcid,
-          name: `${profile["given-names"]} ${profile["family-names"]}`,
-          email: profile.email || null,
-          image: profile["picture-url"] || null,
+      profile: (profile) => ({
+        id: profile["orcid-identifier"].path,
+        name: profile["person"].name,
+        email: null, // ORCID does not provide email by default
+        image: null,
         };
       },
     },
