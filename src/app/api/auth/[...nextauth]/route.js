@@ -34,7 +34,11 @@ const myNextAuthOptions = {
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-      callbackUrl: "/api/auth/callback",
+      authorization: {
+        params: {
+          scope: "r_liteprofile r_emailaddress",
+        },
+      },
     }),
 
     GitHubProvider({
@@ -49,13 +53,24 @@ const myNextAuthOptions = {
   ],
 
   callbacks: {
-    
-    async signIn({ user, account, profile }) {
-      // Redirect to the dashboard after successful sign-in
-      return true; // Redirect to the sign-in page
-    },
+    async authorized({ auth, request }) {
+      const { nextUrl } = request;
+      const isLoggedIn = !!auth?.user; // Check if the user is logged in
+      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard'); // Check if accessing dashboard
 
+      if (isOnDashboard) {
+        return isLoggedIn; // Allow access if logged in; otherwise, deny
+      }
+
+      // Redirect logged-in users to dashboard if they aren't already there
+      if (isLoggedIn) {
+        return `${nextUrl.origin}/dashboard`; // Return URL for redirect
+      }
+
+      return true; // Allow access to other pages for unauthenticated users
+    },
   },
+  
 
   pages: {
     signIn: "/login",

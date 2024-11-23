@@ -1,31 +1,45 @@
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
-export async function middleware(req) {
-  const url = req.nextUrl.clone();
-  const authCookie = "next-auth.session-token"; // Define cookie name here
-  const isAuthenticated = req.cookies.get(authCookie);
+// Define paths that do not require authentication
+const publicPaths = ["/login", "/api/auth/error", "/", "/about"];
 
+export async function middleware(request) {
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
+  const { pathname } = request.nextUrl;
 
-  // Redirect authenticated users away from login page
-  if (url.pathname === "/login" && isAuthenticated) {
-    url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
+  // Allow access to public paths without authentication
+  if (publicPaths.some((path) => pathname.startsWith(path))) {
+    return NextResponse.next();
   }
 
-  
-
-  // Redirect unauthenticated users away from dashboard
-  if (url.pathname === "/dashboard" && !isAuthenticated) {
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+  // Check if the user is trying to access the dashboard
+  if (pathname.startsWith("/dashboard")) {
+    if (!token) {
+      // Redirect unauthenticated users to the login page
+      const loginUrl = new URL("/login", request.url);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
-  // Proceed with the request for other routes
+  // Redirect logged-in users from the login page to the dashboard
+  if (pathname === "/login" && token) {
+    const dashboardUrl = new URL("/dashboard", request.url);
+    return NextResponse.redirect(dashboardUrl);
+  }
+
+  // Proceed with the request for all other cases
   return NextResponse.next();
 }
 
-// Apply middleware only to login and dashboard routes
 export const config = {
-  matcher: ["/login", "/dashboard"],
+  // Explicitly match all routes except static files, API routes, and images
+  matcher: [
+    "/dashboard/:path*", // Protect dashboard and its subpaths
+    "/((?!api|_next/static|_next/image|.*\\..*).*)", // Match pages without file extensions
+  ],
 };
