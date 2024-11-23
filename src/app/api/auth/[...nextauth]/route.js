@@ -72,23 +72,22 @@ const myNextAuthOptions = {
 
       return true; // Allow access to other pages for unauthenticated users
     },
-    async signIn({ user, account, profile }) {
-      console.log("User info:", user); // Debug: Check what user data is being returned
-      console.log("Account info:", account);
-      console.log("Profile info:", profile);
-      return true; // Allow sign-in
+    
+    async signIn({ user, account, profile, email, credentials }) {
+      console.log("SignIn Callback: ", { user, account, profile, email });
+      return true; // Returning false blocks the sign-in
     },
-
-    async session({ session, token }) {
-      // Attach LinkedIn token to session
-      session.accessToken = token.accessToken;
-      return session;
-    },
-    async jwt({ token, account }) {
-      if (account) {
-        token.accessToken = account.access_token; // Store access token
+    async jwt({ token, account, profile }) {
+      console.log("JWT Callback: ", { token, account, profile });
+      if (account?.accessToken) {
+        token.accessToken = account.accessToken;
       }
       return token;
+    },
+    async session({ session, token }) {
+      console.log("Session Callback: ", { session, token });
+      session.accessToken = token.accessToken;
+      return session;
     },
 
   },
