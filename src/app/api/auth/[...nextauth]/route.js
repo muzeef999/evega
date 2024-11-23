@@ -45,7 +45,7 @@ const myNextAuthOptions = {
          }; 
        }, 
      },
-  },
+
 
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
