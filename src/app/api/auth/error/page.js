@@ -1,5 +1,5 @@
 "use client";
-import { Card, Button } from 'react-bootstrap';
+import { Card, Button, Alert } from 'react-bootstrap';
 import Link from "next/link";
 import { Container, Row, Col } from "react-bootstrap"; // Importing necessary components
 
@@ -26,7 +26,7 @@ export default function AuthErrorPage({ searchParams }) {
         <div className='border rounded p-4'>
             <div className='justify-content-center align-items-center'>
             <h1 className="mb-4">Authentication Error</h1>
-              <p>{errorMessage[error] || errorMessage.Default}</p>
+              <Alert variant="danger">{errorMessage[error] || errorMessage.Default}</Alert>
               <Link href="/login" passHref legacyBehavior>
                 <button className='donbutton'>
                   Return to Login
