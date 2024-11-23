@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    appDir: true,
-  },
   env: {
     ORCID_CLIENT_ID: process.env.ORCID_CLIENT_ID,
     ORCID_CLIENT_SECRET: process.env.ORCID_CLIENT_SECRET,
