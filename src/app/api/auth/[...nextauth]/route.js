@@ -26,9 +26,8 @@ const myNextAuthOptions = {
         name: profile["person"].name,
         email: null, // ORCID does not provide email by default
         image: null,
-        };
-      },
-    },
+      }),
+  },
 
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
