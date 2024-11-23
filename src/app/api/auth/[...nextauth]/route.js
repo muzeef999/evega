@@ -36,6 +36,12 @@ const myNextAuthOptions = {
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope: "r_liteprofile r_emailaddress", // Request necessary permissions
+        },
+      },
+
     }),
 
     GitHubProvider({
@@ -66,6 +72,25 @@ const myNextAuthOptions = {
 
       return true; // Allow access to other pages for unauthenticated users
     },
+    async signIn({ user, account, profile }) {
+      console.log("User info:", user); // Debug: Check what user data is being returned
+      console.log("Account info:", account);
+      console.log("Profile info:", profile);
+      return true; // Allow sign-in
+    },
+
+    async session({ session, token }) {
+      // Attach LinkedIn token to session
+      session.accessToken = token.accessToken;
+      return session;
+    },
+    async jwt({ token, account }) {
+      if (account) {
+        token.accessToken = account.access_token; // Store access token
+      }
+      return token;
+    },
+
   },
   
 
