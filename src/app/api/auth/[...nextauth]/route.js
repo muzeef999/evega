@@ -84,6 +84,9 @@ const myNextAuthOptions = {
       }
       return token;
     },
+    async redirect({ url, baseUrl }) {
+      return url.startsWith(baseUrl) ? url : baseUrl; // Ensures valid redirects
+    },
     async session({ session, token }) {
       console.log("Session Callback: ", { session, token });
       session.accessToken = token.accessToken;
