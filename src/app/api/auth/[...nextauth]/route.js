@@ -8,25 +8,43 @@ const myNextAuthOptions = {
     strategy: "jwt",
   },
   providers: [
-    {
-      id: "orcid",
-      name: "ORCID",
-      type: "oauth",
-      version: "2.0",
-      scope: "/authenticate",
-      params: { grant_type: "authorization_code" },
-      accessTokenUrl: "https://orcid.org/oauth/token",
-      authorizationUrl:
-        "https://orcid.org/oauth/authorize?response_type=code",
-      profileUrl: "https://pub.orcid.org/v3.0/~/record",
-      clientId: process.env.ORCID_CLIENT_ID,
-      clientSecret: process.env.ORCID_CLIENT_SECRET,
-      profile: (profile) => ({
-        id: profile["orcid-identifier"].path,
-        name: profile["person"].name,
-        email: null, // ORCID does not provide email by default
-        image: null,
-      }),
+     { 
+       id: "orcid", 
+       name: "ORCID", 
+       type: "oauth", 
+       version: "2.0", 
+       clientId: process.env.ORCID_CLIENT_ID, 
+       clientSecret: process.env.ORCID_CLIENT_SECRET, 
+       authorization: {
+         url: "https://orcid.org/oauth/authorize",
+          params: {
+            scope: "/authenticate", 
+            redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/orcid`, 
+                               },
+                      },
+       token: "https://orcid.org/oauth/token",
+       userinfo: { 
+         url: "https://pub.orcid.org/v3.0/me", 
+          async request(context) { 
+            const res = await fetch("https://pub.orcid.org/v3.0/me", 
+                {
+                  headers: 
+                  {
+                    Authorization: `Bearer ${context.tokens.access_token}`, 
+                       },
+                  }); 
+            const profile = await res.json();
+            return profile; 
+          }, 
+       },
+       profile(profile) { 
+         return { 
+           id: profile.orcid, 
+           name: `${profile["name"]["given-names"]["value"]} ${profile["name"]["family-name"]["value"]}`, 
+           email: profile.email || null, image: profile["picture-url"] || null, 
+         }; 
+       }, 
+     },
   },
 
     LinkedInProvider({
