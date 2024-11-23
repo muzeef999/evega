@@ -198,9 +198,9 @@ const FileUpload = () => {
               ))}
             </tbody>
           </table>
-          <Button variant="primary" className="mt-3" onClick={handleDone}>
+          <button  className='donbutton' onClick={handleDone}>
             <AiOutlineFileDone /> Finalize
-          </Button>
+          </button>
         </div>
       )}
 

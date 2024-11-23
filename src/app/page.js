@@ -5,6 +5,7 @@ import { signIn, useSession } from "next-auth/react";
 import { FacebookLoginButton, GithubLoginButton, GoogleLoginButton, LinkedInLoginButton, OktaLoginButton } from "react-social-login-buttons";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
+import Loading from "./compoents/Loading";
 
 // This is a client-side only component
 const Login = () => {
@@ -26,7 +27,7 @@ const Login = () => {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
-    return <div>Loading...</div>; // Optional loading state
+    return <Loading /> // Optional loading state
   }
 
   if (session) {

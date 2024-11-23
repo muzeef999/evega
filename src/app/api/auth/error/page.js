@@ -19,22 +19,25 @@ export default function AuthErrorPage({ searchParams }) {
   };
 
   return (
-    <Container className="d-flex flex-column justify-content-center align-items-center" style={{marginTop:'50px'}}>
-      <Row className="justify-content-center">
-        <Col xs={12} md={8} lg={6}>
-          <Card className="shadow-lg p-4 rounded-lg">
-            <Card.Body className="text-center">
-              <h1 className="mb-4">Authentication Error</h1>
+
+    <div className="container container-fluid">
+      <div className="row mt-5 d-flex justify-content-center">
+        <div className="col-10 col-lg-5">
+        <div className='border rounded p-4'>
+            <div className='justify-content-center align-items-center'>
+            <h1 className="mb-4">Authentication Error</h1>
               <p>{errorMessage[error] || errorMessage.Default}</p>
               <Link href="/login" passHref legacyBehavior>
-                <Button variant="primary" size="lg" className="mt-3">
+                <button className='donbutton'>
                   Return to Login
-                </Button>
+                </button>
               </Link>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+            </div>
+           
+           </div>
+        </div>
+      </div> 
+    </div>
+
   );
 }
