@@ -17,7 +17,9 @@ const myNextAuthOptions = {
       clientSecret: process.env.ORCID_CLIENT_SECRET,
       authorization: {
         url: "https://orcid.org/oauth/authorize",
-        params: { scope: "/authenticate" },
+        params: { scope: "/authenticate",
+          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/orcid`,
+         },
       },
       token: "https://orcid.org/oauth/token",
       userinfo: "https://pub.orcid.org/v3.0/me",
@@ -35,8 +37,16 @@ const myNextAuthOptions = {
       clientId: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
       authorization: {
+        url: "https://www.linkedin.com/oauth/v2/authorization",
         params: {
-          scope: "r_liteprofile r_emailaddress",
+          scope: "r_liteprofile r_emailaddress", // Define the LinkedIn scopes
+          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/linkedin`, // Explicitly set redirect_uri
+        },
+      },
+      token: {
+        url: "https://www.linkedin.com/oauth/v2/accessToken",
+        params: {
+          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/linkedin`, // Ensure the same redirect_uri for token
         },
       },
     }),
