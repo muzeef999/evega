@@ -10,30 +10,24 @@ const myNextAuthOptions = {
     strategy: "jwt",
   },
   providers: [
-
-    {
+{
       id: "orcid",
       name: "ORCID",
+      type: "oauth",
+      version: "2.0",
+      scope: "/authenticate",
+      params: { grant_type: "authorization_code" },
+      accessTokenUrl: "https://orcid.org/oauth/token",
+      authorizationUrl: "https://orcid.org/oauth/authorize?response_type=code",
+      profileUrl: "https://orcid.org/v3.0/your-orcid-id",
       clientId: process.env.ORCID_CLIENT_ID,
       clientSecret: process.env.ORCID_CLIENT_SECRET,
-      authorization: {
-        url: "https://orcid.org/oauth/authorize",
-
-        params: {
-          response_type: "code",
-          scope: "/read-limited",
-        },
-      },
-      token: "https://orcid.org/oauth/token",
-
-      userinfo: "https://pub.sandbox.orcid.org/v3.0/0000-0000-0000-0000",
       profile(profile) {
-        // Parse the returned profile object from ORCID
         return {
-          id: profile.orcid, // ORCID ID
-          name: profile["name"], // Customize based on ORCID's returned data
-          email: profile["email"], // May not be available depending on scope
-          image: null, // ORCID may not provide user image
+          id: profile.orcid,
+          name: profile.name,
+          email: profile.email || null,
+          image: null, // ORCID typically doesn’t provide profile images
         };
       },
     },
