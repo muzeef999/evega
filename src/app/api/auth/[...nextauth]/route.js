@@ -11,19 +11,21 @@ const myNextAuthOptions = {
   },
   providers: [
 
-{
+    {
       id: "orcid",
       name: "ORCID",
       clientId: process.env.ORCID_CLIENT_ID,
       clientSecret: process.env.ORCID_CLIENT_SECRET,
       authorization: {
-        url: "https://sandbox.orcid.org/oauth/authorize",
+        url: "https://orcid.org/oauth/authorize",
+
         params: {
           response_type: "code",
           scope: "/read-limited",
         },
       },
-      token: "https://sandbox.orcid.org/oauth/token",
+      token: "https://orcid.org/oauth/token",
+
       userinfo: "https://pub.sandbox.orcid.org/v3.0/0000-0000-0000-0000",
       profile(profile) {
         // Parse the returned profile object from ORCID
