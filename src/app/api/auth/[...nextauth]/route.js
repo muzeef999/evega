@@ -11,42 +11,30 @@ const myNextAuthOptions = {
   },
   providers: [
 
-
-    Providers.OAuth({
+{
+      id: "orcid",
+      name: "ORCID",
       clientId: process.env.ORCID_CLIENT_ID,
       clientSecret: process.env.ORCID_CLIENT_SECRET,
-      issuer: 'https://orcid.org',
       authorization: {
-        url: 'https://orcid.org/oauth/authorize',
+        url: "https://sandbox.orcid.org/oauth/authorize",
         params: {
-          scope: '/authenticate',
-          response_type: 'code',
-          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/orcid`
-        }
+          response_type: "code",
+          scope: "/read-limited",
+        },
       },
-      token: {
-        url: 'https://orcid.org/oauth/token',
-        params: {
-          grant_type: 'authorization_code',
-          code: 'CODE',
-          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/orcid`
-        }
-      },
-      userinfo: {
-        url: 'https://api.orcid.org/v2.1/me',
-        params: {
-          access_token: 'ACCESS_TOKEN'
-        }
-      },
+      token: "https://sandbox.orcid.org/oauth/token",
+      userinfo: "https://pub.sandbox.orcid.org/v3.0/0000-0000-0000-0000",
       profile(profile) {
+        // Parse the returned profile object from ORCID
         return {
-          id: profile.orcid,
-          name: `${profile.name.givenNames} ${profile.name.familyName}`,
-          email: profile.email,
-          image: profile.image
+          id: profile.orcid, // ORCID ID
+          name: profile["name"], // Customize based on ORCID's returned data
+          email: profile["email"], // May not be available depending on scope
+          image: null, // ORCID may not provide user image
         };
-      }
-    }),
+      },
+    },
 
 
     LinkedInProvider({
