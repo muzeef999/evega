@@ -16,24 +16,21 @@ const myNextAuthOptions = {
       name: "ORCID",
       type: "oauth",
       version: "2.0",
-      scope: "authenticate", // Default scope for ORCID authentication
+      scope: "/authenticate",
       params: { grant_type: "authorization_code" },
-      accessTokenUrl: "https://orcid.org/oauth/token", // ORCID access token endpoint
-      authorizationUrl: "https://orcid.org/oauth/authorize?response_type=code", // ORCID authorization endpoint
-      profileUrl: "https://pub.orcid.org/v3.0/{orcid}/person", // ORCID profile endpoint (use dynamic ORCID in place of {orcid})
+      accessTokenUrl: "https://orcid.org/oauth/token",
+      authorizationUrl:
+        "https://orcid.org/oauth/authorize?response_type=code",
+      profileUrl: "https://pub.orcid.org/v3.0/{orcid}",
+
       clientId: process.env.ORCID_CLIENT_ID,
       clientSecret: process.env.ORCID_CLIENT_SECRET,
-      issuer: "https://orcid.org", // ORCID issuer for validation
-      wellKnown: "https://orcid.org/.well-known/openid-configuration", // OpenID discovery endpoint (if applicable)
-      authorization: {
-        params: { scope: "authenticate" }, // Additional scope if necessary
-      },
       profile(profile) {
-        // Parse the profile returned from ORCID
         return {
           id: profile.orcid,
-          name: profile.name || profile['personal-details']?.name,
-          email: profile.email || null,
+          name: profile["name"] || `ORCID User ${profile.orcid}`,
+          email: profile["email"] || null,
+          image: null, // ORCID doesn't provide a user image.
         };
       },
     },
