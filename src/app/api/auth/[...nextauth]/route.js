@@ -20,60 +20,50 @@ const myNextAuthOptions = {
       authorization: {
         url: "https://orcid.org/oauth/authorize",
         params: {
-          scope: "/authenticate", // Ensure the ORCID scope is correct
+          scope: "/authenticate",
         },
       },
       token: {
         url: "https://orcid.org/oauth/token",
         async request(context) {
-          try {
-            const { params } = context;
-            const response = await fetch("https://orcid.org/oauth/token", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-              body: new URLSearchParams({
-                client_id: process.env.ORCID_CLIENT_ID,
-                client_secret: process.env.ORCID_CLIENT_SECRET,
-                grant_type: "authorization_code",
-                code: params.code,
-                redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/orcid`,
-              }),
-            });
-
-            const tokens = await response.json();
-
-            if (!response.ok) {
-              console.error("ORCID Token Error:", tokens);
-              throw new Error(
-                `Failed to exchange authorization code for tokens: ${JSON.stringify(
-                  tokens
-                )}`
-              );
-            }
-
-            return {
-              access_token: tokens.access_token,
-              id_token: tokens.orcid,
-              expires_in: tokens.expires_in,
-            };
-          } catch (error) {
-            console.error("ORCID Token Request Error:", error);
-            throw new Error("ORCID Token Exchange Failed");
+          const { params } = context;
+          const response = await fetch("https://orcid.org/oauth/token", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({
+              client_id: process.env.ORCID_CLIENT_ID,
+              client_secret: process.env.ORCID_CLIENT_SECRET,
+              grant_type: "authorization_code",
+              code: params.code,
+              redirect_uri: process.env.NEXTAUTH_URL,
+            }),
+          });
+    
+          const tokens = await response.json();
+          if (!response.ok) {
+            throw new Error(
+              `Failed to exchange authorization code for tokens: ${JSON.stringify(tokens)}`
+            );
           }
+    
+          return {
+            access_token: tokens.access_token,
+            id_token: tokens.id_token,
+            expires_in: tokens.expires_in,
+          };
         },
       },
       profile(profile, tokens) {
         return {
-          id: tokens.id_token || tokens.orcid,
-          name: profile.name || "Unknown ORCID User",
+          id: tokens.id_token,
+          name: profile.name || tokens.orcid,
           email: profile.email || null,
           image: null, // ORCID does not provide an image
         };
       },
     },
-
    
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID,
